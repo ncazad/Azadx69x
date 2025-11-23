@@ -5,7 +5,7 @@ module.exports = {
     name: "fakechat",
     aliases: ["fc"],
     version: "1.0",
-    author: "♡︎ 𝐻𝐴𝑆𝐴𝑁 ♡︎",
+    author: "error",
     countDown: 5,
     role: 0,
     shortDescription: "fakechat",
