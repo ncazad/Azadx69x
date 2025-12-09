@@ -1,6 +1,3 @@
-const axios = require("axios");
-const fs = require("fs");
-
 module.exports = {
   config: {
     name: "tiktok",
@@ -33,7 +30,7 @@ module.exports = {
 
       await message.reply(`🔍 Searching for *${query}*...`);
       
-      const apiUrl = `https://azadx69x-tiktok-api-vfxh.vercel.app/tiktok/search?query=${encodeURIComponent(query)}`;
+      const apiUrl = `https://azadx69x-tiktok-api.vercel.app/tiktok/search?query=${encodeURIComponent(query)}`;
       const { data } = await axios.get(apiUrl);
 
       if (!data?.list?.length)
