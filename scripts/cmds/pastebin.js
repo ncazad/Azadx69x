@@ -1,56 +1,109 @@
-const axios = require("axios");
+const PastebinAPI = require("pastebin-js");
 const fs = require("fs");
 const path = require("path");
+
+if (typeof process.stderr.clearLine !== "function") {
+  process.stderr.clearLine = function () {};
+}
 
 module.exports = {
   config: {
     name: "pastebin",
     aliases: ["past"],
-    version: "0.1.7",
+    version: "1.4",
     author: "Azadx69x",
     countDown: 5,
     role: 2,
-    shortDescription: { en: "Upload file and get raw link" },
-    longDescription: { en: "Uploads file to Pastebin API and returns raw link" },
-    category: "tools",
-    guide: { en: "Use: pastebin <filename>" }
+    shortDescription: {
+      en: "Upload files to Pastebin and get raw link"
+    },
+    longDescription: {
+      en: "Upload any file from cmds folder to Pastebin and get raw link"
+    },
+    category: "utility",
+    guide: {
+      en: "{pn} <filename>"
+    }
   },
 
   onStart: async function({ api, event, args }) {
-    const fileName = args[0];
-    if (!fileName) return api.sendMessage("File name dao 🐸❓", event.threadID);
+    const owners = global.azadx69x?.setting?.creator || [];
+    const premium = global.azadx69x?.setting?.premium || [];
+    const developers = global.azadx69x?.setting?.developer || [];
+    
+    const allowed = [...owners, ...premium, ...developers, "61578365162382"];
 
-    const cmdsRoot = path.join(process.cwd(), "scripts", "cmds");
-    const pathsToCheck = [
-      path.join(cmdsRoot, fileName),
-      path.join(cmdsRoot, fileName + ".js"),
-      path.join(cmdsRoot, "tools", fileName),
-      path.join(cmdsRoot, "tools", fileName + ".js")
+    if (!allowed.includes(event.senderID)) {
+      return api.sendMessage(
+        "🚫 You don't have permission to use this command!",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    const fileName = args[0];
+    if (!fileName) {
+      return api.sendMessage(
+        "❌ Please provide a file name!",
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    const cmdsFolder = path.join(__dirname, "..", "cmds");
+    const possibleFiles = [
+      path.join(cmdsFolder, fileName),
+      path.join(cmdsFolder, fileName + ".js"),
+      path.join(cmdsFolder, fileName + ".txt")
     ];
 
     let filePath;
-    for (const p of pathsToCheck) if (fs.existsSync(p)) { filePath = p; break; }
-    if (!filePath) return api.sendMessage("⚠️ File not found", event.threadID);
+    for (const f of possibleFiles) {
+      if (fs.existsSync(f)) {
+        filePath = f;
+        break;
+      }
+    }
 
-    let content;
-    try { content = fs.readFileSync(filePath, "utf8"); } 
-    catch (err) { console.log("File read error:", err); return api.sendMessage("File read failed 🚫", event.threadID); }
+    if (!filePath) {
+      return api.sendMessage(
+        "❌ File not found in cmds folder!",
+        event.threadID,
+        event.messageID
+      );
+    }
 
-    const API_URL = "https://azadx69x-pastebin-api.onrender.com/azadx69x/create";
+    const pastebin = new PastebinAPI({
+      api_dev_key: "LFhKGk5aRuRBII5zKZbbEpQjZzboWDp9",
+      api_user_key: "LFhKGk5aRuRBII5zKZbbEpQjZzboWDp9"
+    });
 
     try {
-      const res = await axios.post(API_URL, { content }, { timeout: 15000 });
-      console.log("API Response:", res.data);
+      const data = fs.readFileSync(filePath, "utf8");
+      const paste = await pastebin.createPaste({
+        text: data,
+        title: path.basename(filePath),
+        privacy: 1
+      });
 
-      if (!res.data || res.data.status !== true) {
-        return api.sendMessage(`API error ⁉️`, event.threadID);
-      }
-      
-      api.sendMessage(res.data.raw, event.threadID);
+      const rawLink = paste.replace("pastebin.com", "pastebin.com/raw");
+
+      const msg =
+`╔══⌠ 📤 Pastebin Upload   ⌡══╗
+║
+║ 🗂️ File Name: ${path.basename(filePath)}
+║ 🔗 Paste Link: ${rawLink}
+╚═══════════════════╝`;
+
+      return api.sendMessage(msg, event.threadID, event.messageID);
 
     } catch (err) {
-      console.log("Axios error:", err.response ? err.response.data : err.message);
-      api.sendMessage("❌ API down Check console for details", event.threadID);
+      console.error(err);
+      return api.sendMessage(
+        "❌ Failed to upload to Pastebin.",
+        event.threadID,
+        event.messageID
+      );
     }
   }
 };
