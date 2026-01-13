@@ -1,0 +1,236 @@
+{
+	"commandBanned": {},
+	"envGlobal": {
+		"weatherApiKey": "d7e795ae6a0d44aaa8abb1a0a7ac19e4",
+		"x69xbotApikey": "",
+		"openaiApiKey": "",
+		"googleApiKey": "",
+		"youtubeApiKey": "",
+		"tenorApiKey": "AIzaSyCyouca1_KKy4W_MG1xsPzuku5oa8Xhfdc",
+		"spotifyClientId": "",
+		"spotifyClientSecret": "",
+		"notes": "X69X BOT V2 API Keys: Configure your API keys here for enhanced features"
+	},
+	"envCommands": {
+		"daily": {
+			"rewardDay1": {
+				"coin": 100,
+				"exp": 10
+			},
+			"rewardDay2": {
+				"coin": 150,
+				"exp": 15
+			},
+			"rewardDay3": {
+				"coin": 200,
+				"exp": 20
+			},
+			"rewardDay7": {
+				"coin": 500,
+				"exp": 50,
+				"special": "Premium bonus"
+			},
+			"streakBonus": true,
+			"notes": "X69X BOT V2 Daily Reward System"
+		},
+		"notification": {
+			"delayPerGroup": 250,
+			"maxNotifications": 10,
+			"notificationStyle": "modern",
+			"notes": "X69X BOT V2 Notification Settings"
+		},
+		"rank": {
+			"deltaNext": 5,
+			"rankNames": {
+				"1": "⭐ Beginner",
+				"2": "⭐⭐ Novice",
+				"3": "⭐⭐⭐ Intermediate",
+				"4": "⭐⭐⭐⭐ Advanced",
+				"5": "⭐⭐⭐⭐⭐ Expert",
+				"6": "👑 Master",
+				"7": "💎 Legend",
+				"8": "🚀 Godlike"
+			},
+			"notes": "X69X BOT V2 Ranking System"
+		},
+		"rankup": {
+			"deltaNext": 5,
+			"announcement": true,
+			"bonusCoins": 50,
+			"notes": "X69X BOT V2 Rank Up Settings"
+		},
+		"appstore": {
+			"limitResult": 3,
+			"region": "us",
+			"language": "en",
+			"notes": "X69X BOT V2 App Store Search"
+		},
+		"getaitheme": {
+			"themesCount": 10,
+			"showColors": true,
+			"showFonts": true,
+			"showInspiration": true,
+			"notes": "X69X BOT V2 AI Theme Generator Settings"
+		},
+		"getThem": {
+			"maxMembers": 50,
+			"showProfileLinks": true,
+			"showGenderStats": true,
+			"showAdminList": true,
+			"notes": "X69X BOT V2 Group Member Information"
+		},
+		"ai": {
+			"enabled": true,
+			"model": "gpt-3.5-turbo",
+			"temperature": 0.7,
+			"maxTokens": 1000,
+			"notes": "X69X BOT V2 AI Chat Settings"
+		},
+		"music": {
+			"quality": "high",
+			"format": "mp3",
+			"maxDuration": 300,
+			"notes": "X69X BOT V2 Music Download Settings"
+		},
+		"image": {
+			"maxSize": 5000,
+			"allowedFormats": ["jpg", "jpeg", "png", "gif"],
+			"compression": true,
+			"notes": "X69X BOT V2 Image Processing Settings"
+		},
+		"game": {
+			"enabled": true,
+			"games": ["trivia", "guess", "wordle", "hangman"],
+			"defaultPoints": 10,
+			"notes": "X69X BOT V2 Game Settings"
+		},
+		"economy": {
+			"startingBalance": 100,
+			"dailyBonus": 50,
+			"workCooldown": 3600,
+			"crimeCooldown": 7200,
+			"robCooldown": 10800,
+			"notes": "X69X BOT V2 Economy System"
+		}
+	},
+	"envEvents": {
+		"logsbot": {
+			"allow": true,
+			"logLevel": "info",
+			"logToFile": true,
+			"notes": "X69X BOT V2 Logging Settings"
+		},
+		"welcome": {
+			"enabled": true,
+			"message": "🎉 Welcome {userName} to {groupName}!",
+			"imageEnabled": true,
+			"notes": "X69X BOT V2 Welcome Event"
+		},
+		"farewell": {
+			"enabled": true,
+			"message": "👋 Goodbye {userName}! We'll miss you.",
+			"imageEnabled": true,
+			"notes": "X69X BOT V2 Farewell Event"
+		},
+		"antiLink": {
+			"enabled": false,
+			"whitelist": ["facebook.com", "youtube.com", "github.com"],
+			"action": "warn",
+			"notes": "X69X BOT V2 Anti-Link Protection"
+		},
+		"antiSpam": {
+			"enabled": true,
+			"threshold": 5,
+			"timeframe": 10,
+			"action": "mute",
+			"notes": "X69X BOT V2 Anti-Spam Protection"
+		},
+		"autoReact": {
+			"enabled": true,
+			"keywords": {
+				"thanks": ["❤️", "🙏"],
+				"hello": ["👋", "😊"],
+				"good": ["👍", "⭐"],
+				"bad": ["👎", "😔"],
+				"lol": ["😂", "🤣"]
+			},
+			"notes": "X69X BOT V2 Auto Reaction System"
+		},
+		"scheduled": {
+			"enabled": true,
+			"morningGreeting": "08:00",
+			"nightGreeting": "22:00",
+			"timezone": "Asia/Dhaka",
+			"notes": "X69X BOT V2 Scheduled Messages"
+		}
+	},
+	"modules": {
+		"enabled": true,
+		"core": {
+			"admin": true,
+			"group": true,
+			"user": true,
+			"fun": true,
+			"utility": true,
+			"media": true,
+			"nsfw": false,
+			"economy": true,
+			"games": true,
+			"ai": true
+		},
+		"custom": {
+			"getThem": true,
+			"getaitheme": true,
+			"custom1": false,
+			"custom2": false,
+			"notes": "X69X BOT V2 Custom Modules"
+		},
+		"notes": "X69X BOT V2 Module Management: Enable/disable feature groups"
+	},
+	"features": {
+		"autoUpdate": true,
+		"backup": {
+			"enabled": true,
+			"interval": 86400,
+			"maxBackups": 7,
+			"notes": "X69X BOT V2 Auto Backup"
+		},
+		"performance": {
+			"cacheEnabled": true,
+			"cacheDuration": 3600,
+			"optimization": true,
+			"notes": "X69X BOT V2 Performance Settings"
+		},
+		"security": {
+			"encryption": true,
+			"rateLimit": true,
+			"maxRequests": 100,
+			"notes": "X69X BOT V2 Security Features"
+		}
+	},
+	"customization": {
+		"colors": {
+			"primary": "#00b4db",
+			"secondary": "#ff416c",
+			"success": "#00F5A0",
+			"warning": "#f5af19",
+			"error": "#ff4b2b",
+			"notes": "X69X BOT V2 Color Theme"
+		},
+		"emojis": {
+			"success": "✅",
+			"error": "❌",
+			"warning": "⚠️",
+			"info": "ℹ️",
+			"loading": "⏳",
+			"notes": "X69X BOT V2 Emoji Set"
+		},
+		"messages": {
+			"prefixHelp": "Type {prefix}help for commands",
+			"welcome": "Welcome to X69X BOT V2!",
+			"goodbye": "Thanks for using X69X BOT V2!",
+			"error": "X69X BOT V2 encountered an error",
+			"notes": "X69X BOT V2 Custom Messages"
+		}
+	}
+}

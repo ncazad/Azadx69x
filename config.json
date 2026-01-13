@@ -1,0 +1,192 @@
+{
+  "facebookAccount": {
+    "email": "",
+    "password": "",
+    "2FASecret": "",
+    "i_user": "",
+    "proxy": null,
+    "userAgent": "Mozilla/5.0 (Linux; Android 12; M2102J20SG) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Mobile Safari/537.36",
+    "intervalGetNewCookie": 1440,
+    "notes": "Set 1440 or 4320. Requires email & password."
+  },
+
+  "antiInbox": true,
+  "checkApproval": true,
+
+  "language": "en",
+  "notesLanguage": "vi, en",
+
+  "nickNameBot": "X69X BOT V2",
+  "prefix": ")",
+
+  "adminuseprefix": {
+    "enable": true,
+    "adminOnly": {
+      "enable": true,
+      "ignoreCommand": []
+    }
+  },
+
+  "owner": [
+    "61585772322631"
+  ],
+
+  "adminBot": [
+    "61585772322631"
+  ],
+
+  "developerOnly": {
+    "enable": false,
+    "ignoreCommand": []
+  },
+
+  "vipOnly": {
+    "enable": false,
+    "ignoreCommand": []
+  },
+
+  "developer": [
+    "61585772322631"
+  ],
+
+  "vipuser": [
+    "61585772322631"
+  ],
+
+  "whiteListMode": {
+    "enable": false,
+    "whiteListIds": [],
+    "notes": "Only listed users can use bot"
+  },
+
+  "whiteListModeThread": {
+    "enable": false,
+    "whiteListThreadIds": [],
+    "notes": "Only listed threads can use bot"
+  },
+
+  "database": {
+    "type": "sqlite",
+    "uriMongodb": "",
+    "autoSyncWhenStart": false,
+    "autoRefreshThreadInfoFirstTime": true,
+    "notes": "Recommended mongodb or sqlite"
+  },
+
+  "reactBy": {
+    "delete": ["👺", "🤬", "😠", "😡", "😾"],
+    "kick": ["🖕", "🦵"]
+  },
+
+  "api": "https://azadx69x-all-apis-top.vercel.app",
+  "timeZone": "Asia/Ho_Chi_Minh",
+
+  "credentials": {
+    "gmailAccount": {
+      "email": "maybesaim12@gmail.com",
+      "clientId": "100897454411-5r8hk9opvdijmogm98ksttg4asvfs3u6.apps.googleusercontent.com",
+      "clientSecret": "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",
+      "refreshToken": "1//04CwY3A993tGWCgYIARAAGAQSNwF-L9IrEMdVj25IWIOrpT0HX7Lo4YXx6ce0JP-C3GjKoyWSFb_-f_N3oHRL15ZwrsQ8TpBsjmI",
+      "apiKey": ""
+    },
+    "gRecaptcha": {
+      "siteKey": "6LdZTuIrAAAAAEJ9LXfW4a0V97vUPe31lp95DKvA",
+      "secretKey": "6LdZTuIrAAAAAEEK-qSFLsTkK_RJQnL4yTIhcJcL"
+    }
+  },
+
+  "dashBoard": {
+    "enable": true,
+    "expireVerifyCode": 300000,
+    "port": 9999
+  },
+
+  "serverUptime": {
+    "enable": false,
+    "port": 3001,
+    "socket": {
+      "enable": true,
+      "channelName": "uptime",
+      "verifyToken": "u1940319-ea7f101121162c69af48f6ce"
+    }
+  },
+
+  "autoRestart": {
+    "time": null,
+    "notes": "Set ms or cron time"
+  },
+
+  "autoUptime": {
+    "enable": false,
+    "timeInterval": 180,
+    "url": ""
+  },
+
+  "autoLoadScripts": {
+    "enable": false,
+    "ignoreCmds": "",
+    "ignoreEvents": ""
+  },
+
+  "autoRefreshFbstate": true,
+  "autoReloginWhenChangeAccount": true,
+  "autoRestartWhenListenMqttError": false,
+
+  "restartListenMqtt": {
+    "enable": true,
+    "timeRestart": 1800000,
+    "delayAfterStopListening": 2000,
+    "logNoti": true
+  },
+
+  "notiWhenListenMqttError": {
+    "gmail": {
+      "enable": false,
+      "emailGetNoti": ""
+    },
+    "telegram": {
+      "enable": false,
+      "botToken": "",
+      "chatId": ""
+    },
+    "discordHook": {
+      "enable": false,
+      "webhookUrl": ""
+    }
+  },
+
+  "hideNotiMessage": {
+    "commandNotFound": false,
+    "adminOnly": false,
+    "threadBanned": false,
+    "userBanned": false,
+    "needRoleToUseCmd": false,
+    "needRoleToUseCmdOnReply": false,
+    "needRoleToUseCmdOnReaction": false
+  },
+
+  "logEvents": {
+    "disableAll": false,
+    "message": true,
+    "message_reaction": true,
+    "message_unsend": true,
+    "message_reply": true,
+    "event": true,
+    "read_receipt": false,
+    "typ": false,
+    "presence": false
+  },
+
+  "optionsFca": {
+    "forceLogin": true,
+    "listenEvents": true,
+    "updatePresence": true,
+    "listenTyping": true,
+    "logLevel": "error",
+    "selfListen": true,
+    "selfListenEvent": true,
+    "autoMarkDelivery": false,
+    "autoReconnect": false,
+    "notes": "Document here: https://github.com/ntkhang03/fb-chat-api/blob/master/DOCS.md#apisetoptionsoptions"
+  }
+}
