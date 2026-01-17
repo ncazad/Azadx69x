@@ -1,3 +1,22 @@
+/**
+ * @author NTKhang
+ * ! The source code is written by NTKhang, please don't change the author's name everywhere. Thank you for using
+ * ! Official source code: https://github.com/ntkhang03/Goat-Bot-V2
+ * ! If you do not download the source code from the above address, you are using an unknown version and at risk of having your account hacked
+ *
+ * English:
+ * ! Please do not change the below code, it is very important for the project.
+ * It is my motivation to maintain and develop the project for free.
+ * ! If you change it, you will be banned forever
+ * Thank you for using
+ *
+ * Vietnamese:
+ * ! Vui lòng không thay đổi mã bên dưới, nó rất quan trọng đối với dự án.
+ * Nó là động lực để tôi duy trì và phát triển dự án miễn phí.
+ * ! Nếu thay đổi nó, bạn sẽ bị cấm vĩnh viễn
+ * Cảm ơn bạn đã sử dụng
+ */
+
 process.on('unhandledRejection', error => console.log(error));
 process.on('uncaughtException', error => console.log(error));
 
@@ -16,10 +35,10 @@ function getConfigPath(baseName, ext = ".json") {
 		const devPath = path.join(__dirname, `${baseName}.dev${ext}`);
 		const normalPath = path.join(__dirname, `${baseName}${ext}`);
 		if (fs.existsSync(devPath)) {
-			console.log(`✔️ Loaded ${baseName}.dev${ext}`);
+			console.log(`⏳ Loaded ${baseName}.dev${ext}`);
 			return devPath;
 		} else if (fs.existsSync(normalPath)) {
-			console.log(`📂 Loaded ${baseName}${ext}`);
+			console.log(`✅ Loaded ${baseName}${ext}`);
 			return normalPath;
 		} else {
 			throw new Error(`⛔ Missing ${baseName}${ext} or ${baseName}.dev${ext}`);
@@ -32,7 +51,7 @@ function getConfigPath(baseName, ext = ".json") {
 function validJSON(pathDir) {
 	try {
 		if (!fs.existsSync(pathDir))
-			throw new Error(`📄 File "${pathDir}" not found`);
+			throw new Error(`File "${pathDir}" not found`);
 		execSync(`npx jsonlint "${pathDir}"`, { stdio: 'pipe' });
 		return true;
 	}
@@ -54,7 +73,7 @@ for (const pathDir of [dirConfig, dirConfigCommands]) {
 		validJSON(pathDir);
 	}
 	catch (err) {
-		log.error("CONFIG", `❌ Invalid JSON file "${pathDir.replace(__dirname, "")}":\n${err.message.split("\n").map(line => `  ${line}`).join("\n")}\n🔥 Please fix it and restart bot`);
+		log.error("CONFIG", `Invalid JSON file "${pathDir.replace(__dirname, "")}":\n${err.message.split("\n").map(line => `  ${line}`).join("\n")}\nPlease fix it and restart bot`);
 		process.exit(0);
 	}
 }
@@ -155,10 +174,10 @@ const watchAndReloadConfig = (dir, type, prop, logName) => {
 					}
 					if (lastModified === fs.statSync(dir).mtimeMs) return;
 					global.GoatBot[prop] = JSON.parse(fs.readFileSync(dir, 'utf-8'));
-					log.success(logName, `🔄 Synced ${dir.replace(process.cwd(), "")}`);
+					log.success(logName, `Reloaded ${dir.replace(process.cwd(), "")}`);
 				}
 				catch (err) {
-					log.warn(logName, `⚠️ Can't reload ${dir.replace(process.cwd(), "")}`);
+					log.warn(logName, `Can't reload ${dir.replace(process.cwd(), "")}`);
 					global.GoatBot[prop] = oldConfig;
 				}
 				finally {
@@ -183,7 +202,7 @@ if (config.autoRestart) {
 	if (!isNaN(time) && time > 0) {
 		utils.log.info("AUTO RESTART", getText("Goat", "autoRestart1", utils.convertTime(time, true)));
 		setTimeout(() => {
-			utils.log.info("AUTO RESTART", "☢️ Restarting...");
+			utils.log.info("AUTO RESTART", "Restarting...");
 			process.exit(2);
 		}, time);
 	}
@@ -191,7 +210,7 @@ if (config.autoRestart) {
 		utils.log.info("AUTO RESTART", getText("Goat", "autoRestart2", time));
 		const cron = require("node-cron");
 		cron.schedule(time, () => {
-			utils.log.info("AUTO RESTART", "🔁 Restarting...");
+			utils.log.info("AUTO RESTART", "Restarting...");
 			process.exit(2);
 		});
 	}
@@ -252,7 +271,7 @@ if (config.autoRestart) {
 			"newVersionDetected",
 			colors.gray(currentVersion),
 			colors.hex("#eb6a07", version),
-			colors.hex("#eb6a07", "📤 node update")
+			colors.hex("#eb6a07", "node update")
 		));
 
 	const parentIdGoogleDrive = await utils.drive.checkAndCreateParentFolder("GoatBot");
@@ -269,4 +288,4 @@ function compareVersion(version1, version2) {
 		if (parseInt(v1[i]) < parseInt(v2[i])) return -1;
 	}
 	return 0;
-}
+	}
