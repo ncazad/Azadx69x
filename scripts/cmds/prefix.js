@@ -1,6 +1,13 @@
 const fs = require("fs-extra");
 const { utils } = global;
 
+const BOT_NAME = "X69X BOT V2"; // Don't change
+const PREFIX_CHECK_GIF = "https://i.ibb.co/5X9T2dDN/image0.gif";
+
+function getBDDate() {
+  return new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }));
+}
+
 function formatTime(date) {
   const hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -10,10 +17,8 @@ function formatTime(date) {
 }
 
 function formatDate(date) {
-  const months = ["January", "February", "March", "April", "May", "June",
-                  "July", "August", "September", "October", "November", "December"];
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   return {
     day: date.getDate(),
     month: months[date.getMonth()],
@@ -26,46 +31,35 @@ function formatDate(date) {
 async function getUserFirstName(api, userID) {
   try {
     const userInfo = await api.getUserInfo(userID);
-    if (userInfo[userID]?.name) {
-      return userInfo[userID].name.split(" ")[0] || userInfo[userID].name;
-    }
+    if (userInfo[userID]?.name) return userInfo[userID].name.split(" ")[0] || userInfo[userID].name;
   } catch (err) {
     console.error("[prefix.js - getUserFirstName]", err);
   }
   return "User";
 }
 
-function getBDDate() {
-  return new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" })
-  );
-}
-
-const BOT_NAME = "X69X BOT V2"; // Don't Change 
-const PREFIX_CHECK_GIF = "https://files.catbox.moe/ddo1rt.gif";
-
 module.exports = {
   config: {
     name: "prefix",
-    version: "2.3",
+    version: "0.0.8",
     author: "Azadx69x",
     countDown: 5,
     role: 0,
-    description: "Change or check bot prefix in your chat or globally group",
+    description: "Change or check bot prefix in your chat or globally",
     category: "config",
     guide: {
-      en: "   {pn} <new prefix>: change prefix in your chat\n"
-        + "   Example: {pn} #\n"
-        + "   {pn} <new prefix> -g: change prefix globally (admin only)\n"
-        + "   Example: {pn} # -g\n"
-        + "   {pn} reset: reset prefix in your chat\n"
-        + "   {pn} or just type 'prefix' to check current prefix",
-      vi: "   {pn} <new prefix>: change prefix in your chat\n"
-        + "   Example: {pn} #\n"
-        + "   {pn} <new prefix> -g: change prefix globally (admin only)\n"
-        + "   Example: {pn} # -g\n"
-        + "   {pn} reset: reset prefix in your chat\n"
-        + "   {pn} or just type 'prefix' to check current prefix"
+      en: "{pn} <new prefix>: change prefix in your chat\n"
+        + "Example: {pn} #\n"
+        + "{pn} <new prefix> -g: change prefix globally (admin only)\n"
+        + "Example: {pn} # -g\n"
+        + "{pn} reset: reset prefix in your chat\n"
+        + "{pn} or just type 'prefix' to check current prefix",
+      vi: "{pn} <new prefix>: change prefix in your chat\n"
+        + "Example: {pn} #\n"
+        + "{pn} <new prefix> -g: change prefix globally (admin only)\n"
+        + "Example: {pn} # -g\n"
+        + "{pn} reset: reset prefix in your chat\n"
+        + "{pn} or just type 'prefix' to check current prefix"
     }
   },
 
@@ -75,362 +69,181 @@ module.exports = {
       onlyAdmin: "⛔ Only admin can change system-wide prefix",
       confirmGlobal: "Please react to confirm system-wide prefix change",
       confirmThisThread: "Please react to confirm thread prefix change",
-      successGlobal: "✅ System-wide prefix changed to: %1",
-      successThisThread: "✅ Thread prefix changed to: %1",
-      myPrefix: "🌐 System prefix: %1\n🛸 Thread prefix: %2"
     },
     vi: {
       reset: "Đã reset prefix về mặc định: %1",
       onlyAdmin: "Chỉ admin mới có thể thay đổi prefix toàn hệ thống",
       confirmGlobal: "Vui lòng react để xác nhận thay đổi prefix toàn hệ thống",
       confirmThisThread: "Vui lòng react để xác nhận thay đổi prefix nhóm chat",
-      successGlobal: "Đã thay đổi prefix toàn hệ thống: %1",
-      successThisThread: "Đã thay đổi prefix nhóm chat: %1",
-      myPrefix: "🌐 System prefix: %1\n🛸 Thread prefix: %2"
     }
   },
-
+  
   onStart: async function (ctx) {
     try {
-      const { message, role, args, commandName, event, threadsData, getLang, api } = ctx;
-        
-      if (!args[0]) {
-        return message.SyntaxError?.();
-      }
-        
+      const { message, role, args, event, threadsData, getLang, api, commandName } = ctx;
+      if (!args[0]) return message.SyntaxError?.();
+
+      const now = getBDDate();
+      const currentTime = formatTime(now);
+      const currentDate = formatDate(now);
+      const userName = await getUserFirstName(api, event.senderID);
+      
       if (args[0] === "reset") {
         await threadsData.set(event.threadID, null, "data.prefix");
-        return message.reply(getLang("reset", global.GoatBot.config.prefix));
+        return message.reply(`
+┍━━━[  🤖 𝗫𝟲𝟵𝗫 𝗕𝗢𝗧  ]━━━◊
+┋
+┋➥ 😀 Hey ${userName}
+┋
+┋➥ 🕰️ Time : ${currentTime}
+┋➥ 🌊 Date : ${currentDate.formatted}
+┋➥ 🌤️ Day  : ${currentDate.dayName}
+┋➥ 🔧 Prefix has been reset to default: ${global.GoatBot.config.prefix}
+┋➥ 😊 ${BOT_NAME} AT YOUR SERVICE
+┕━━━━━━━━━━━━━━━━━━━━━◊
+`.trim());
       }
 
       const newPrefix = args[0];
-      const formSet = { 
-        commandName, 
-        author: event.senderID, 
+      if (!newPrefix || newPrefix.length > 5) return message.reply("⛔ Invalid prefix. Use 1-5 characters only.");
+
+      const formSet = {
+        commandName,
+        author: event.senderID,
         newPrefix,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        setGlobal: args[1] === "-g"
       };
 
-      let confirmText = "";
-      if (args[1] === "-g") {
-        if (role < 2) return message.reply(getLang("onlyAdmin"));
-        formSet.setGlobal = true;
-        confirmText = getLang("confirmGlobal");
-      } else {
-        formSet.setGlobal = false;
-        confirmText = getLang("confirmThisThread");
-      }
-        
-      const userName = await getUserFirstName(api, event.senderID);
-        
-      const now = new Date();
-      const currentTime = formatTime(now);
-      const currentDate = formatDate(now);
+      if (formSet.setGlobal && role < 2) return message.reply(getLang("onlyAdmin"));
+      const confirmText = formSet.setGlobal ? getLang("confirmGlobal") : getLang("confirmThisThread");
 
       const boxConfirm = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-│➥📅 Date : ${currentDate.formatted}
-│➥🗓️ Day : ${currentDate.dayName}
-├─•
-│➥👋 Hey ${userName}
-├─•
-│➥🔧 PREFIX CONFIRMATION
-│➥📝 Action: ${confirmText}
-│➥🔧 New Prefix: ${newPrefix}
-│➥🎯 Type: ${formSet.setGlobal ? "Global" : "Thread"}
-├─•
-│➥📊 SYSTEM STATS
-│➥⏳ Status: Waiting
-│➥👍 React to confirm
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
+┍━━━[  🤖 𝗫𝟲𝟵𝗫 𝗕𝗢𝗧  ]━━━◊
+┋
+┋➥ 😀 Hey ${userName}
+┋
+┋➥ 🕰️ Time : ${currentTime}
+┋➥ 🌊 Date : ${currentDate.formatted}
+┋➥ 🌤️ Day  : ${currentDate.dayName}
+┋➥ 🔧 New Prefix : ${newPrefix}
+┋➥ 📝 Action    : ${confirmText}
+┋➥ 😊 ${BOT_NAME} AT YOUR SERVICE
+┕━━━━━━━━━━━━━━━━━━━━━◊
 `.trim();
 
       return message.reply(boxConfirm, (err, info) => {
-        if (err) {
-          console.error("[prefix.js - reply error]", err);
-          return;
-        }
-        
-        if (!global.GoatBot.onReaction) {
-          global.GoatBot.onReaction = new Map();
-        }
-        
+        if (err) return console.error("[prefix.js - reply error]", err);
+        if (!global.GoatBot.onReaction) global.GoatBot.onReaction = new Map();
         formSet.messageID = info.messageID;
         formSet.userName = userName;
         global.GoatBot.onReaction.set(info.messageID, formSet);
-          
-        setTimeout(() => {
-          if (global.GoatBot.onReaction?.has(info.messageID)) {
-            global.GoatBot.onReaction.delete(info.messageID);
-          }
-        }, 30 * 60 * 1000);
+
+        setTimeout(() => global.GoatBot.onReaction?.delete(info.messageID), 30 * 60 * 1000);
       });
     } catch (err) {
       console.error("[prefix.js - onStart]", err);
-      
-      const now = new Date();
+      const now = getBDDate();
       const currentTime = formatTime(now);
-      
-      const errorBox = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-├─•
-│➥⚠️ ERROR OCCURRED
-│➥📝 Message: ${err.message || "Unknown error"}
-│➥🎯 Command: prefix
-├─•
-│➥📊 SYSTEM STATS
-│➥❌ Status: Failed
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
-`.trim();
-      
-      ctx.message.reply(errorBox);
+      const currentDate = formatDate(now);
+      message.reply(`
+┍━━━[  🤖 𝗫𝟲𝟵𝗫 𝗕𝗢𝗧  ]━━━◊
+┋
+┋➥ ⚠️ ERROR OCCURRED
+┋➥ 🕰️ Time : ${currentTime}
+┋➥ 🌊 Date : ${currentDate.formatted}
+┋➥ 🌤️ Day  : ${currentDate.dayName}
+┋➥ 📝 Message: ${err.message || "Unknown error"}
+┋➥ 😊 ${BOT_NAME} AT YOUR SERVICE
+┕━━━━━━━━━━━━━━━━━━━━━◊
+`.trim());
     }
   },
-
+  
   onReaction: async function (ctx) {
     try {
-      const { message, threadsData, event, Reaction, getLang, api } = ctx;
-        
-      if (!Reaction || event.userID !== Reaction.author) {
-        return;
-      }
+      const { message, event, Reaction, threadsData, api } = ctx;
+      if (!Reaction || event.userID !== Reaction.author) return;
 
-      const { author, newPrefix, setGlobal, messageID, userName } = Reaction;
-        
-      let changedByName = userName || await getUserFirstName(api, event.userID);
-        
-      const now = new Date();
+      const { newPrefix, setGlobal, messageID, userName } = Reaction;
+      const changedByName = userName || await getUserFirstName(api, event.userID);
+      const now = getBDDate();
       const currentTime = formatTime(now);
       const currentDate = formatDate(now);
 
-      if (setGlobal) {
-        global.GoatBot.config.prefix = newPrefix;
-        try {
-          fs.writeFileSync(global.client.dirConfig, JSON.stringify(global.GoatBot.config, null, 2));
-        } catch (err) {
-          console.error("[prefix.js - write config]", err);
-          throw new Error("Failed to save global configuration");
-        }
-        
-        const successBox = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-│➥📅 Date : ${currentDate.formatted}
-│➥🗓️ Day : ${currentDate.dayName}
-├─•
-│➥👋 Hey ${changedByName}
-├─•
-│➥✅ PREFIX CHANGED
-│➥🌐 Global Prefix Updated
-│➥🔧 New Prefix: ${newPrefix}
-│➥🎯 Type: Global
-├─•
-│➥📊 SYSTEM STATS
-│➥✅ Status: Success
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
-`.trim();
-        
-        await message.reply(successBox);
-      } else {
-        await threadsData.set(event.threadID, newPrefix, "data.prefix");
-        
-        const successBox = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-│➥📅 Date : ${currentDate.formatted}
-│➥🗓️ Day : ${currentDate.dayName}
-├─•
-│➥👋 Hey ${changedByName}
-├─•
-│➥✅ PREFIX CHANGED
-│➥💬 Thread Prefix Updated
-│➥🔧 New Prefix: ${newPrefix}
-│➥🎯 Type: Thread
-├─•
-│➥📊 SYSTEM STATS
-│➥✅ Status: Success
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
-`.trim();
-        
-        await message.reply(successBox);
-      }
-        
-      try {
-        await message.unsend(messageID);
-      } catch (unsendErr) {
-        console.error("[prefix.js - unsend error]", unsendErr);
-      }
+      if (setGlobal) global.GoatBot.config.prefix = newPrefix;
+      else await threadsData.set(event.threadID, newPrefix, "data.prefix");
+      if (setGlobal) await fs.writeFile(global.client.dirConfig, JSON.stringify(global.GoatBot.config, null, 2));
 
-      if (global.GoatBot.onReaction?.has(messageID)) {
-        global.GoatBot.onReaction.delete(messageID);
-      }
+      const boxSuccess = `
+┍━━━[  🤖 𝗫𝟲𝟵𝗫 𝗕𝗢𝗧  ]━━━◊
+┋
+┋➥ 😀 Hey ${changedByName}
+┋
+┋➥ 🕰️ Time : ${currentTime}
+┋➥ 🌊 Date : ${currentDate.formatted}
+┋➥ 🌤️ Day  : ${currentDate.dayName}
+┋➥ 🔧 New Prefix : ${newPrefix}
+┋➥ 😊 ${BOT_NAME} AT YOUR SERVICE
+┕━━━━━━━━━━━━━━━━━━━━━◊
+`.trim();
+
+      await message.reply(boxSuccess);
+      try { await message.unsend(messageID); } catch {}
+      global.GoatBot.onReaction?.delete(messageID);
 
     } catch (err) {
       console.error("[prefix.js - onReaction]", err);
-      
-      const now = new Date();
-      const currentTime = formatTime(now);
-      
-      const errorBox = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-├─•
-│➥⚠️ REACTION ERROR
-│➥📝 Message: ${err.message || "Unknown error"}
-├─•
-│➥📊 SYSTEM STATS
-│➥❌ Status: Failed
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
-`.trim();
-      
-      ctx.message.reply(errorBox);
     }
   },
-
+  
   onChat: async function (ctx) {
     try {
       const { event, message, api, threadsData } = ctx;
-        
-      const msgBody = event.body ? event.body.trim().toLowerCase() : '';
+      const msgBody = (event.body || '').trim().toLowerCase();
       if (msgBody !== "prefix") return;
-        
+
       const userName = await getUserFirstName(api, event.senderID);
-        
-      let memberCount = "Unknown";
-      try {
-        const threadInfo = await api.getThreadInfo(event.threadID);
-        memberCount = threadInfo.participantIDs.length.toString();
-      } catch (err) {
-        console.error("[prefix.js - getThreadInfo]", err);
-      }
-        
-      let threadPrefix;
-      try {
-        threadPrefix = await threadsData.get(event.threadID, "data.prefix");
-      } catch (err) {
-        console.error("[prefix.js - get thread prefix]", err);
-        threadPrefix = null;
-      }
-      
-      const systemPrefix = global.GoatBot.config.prefix;
-      const globalPrefix = systemPrefix;
-      const chatPrefix = threadPrefix || systemPrefix;
-        
-      const uptime = process.uptime();
-      const hoursUptime = Math.floor(uptime / 3600);
-      const minutesUptime = Math.floor((uptime % 3600) / 60);
-      const secondsUptime = Math.floor(uptime % 60);
-      const uptimeText = `${hoursUptime}h ${minutesUptime}m ${secondsUptime}s`;
-        
-      const now = new Date();
+      const threadPrefix = await threadsData.get(event.threadID, "data.prefix").catch(() => null);
+      const chatPrefix = threadPrefix || global.GoatBot.config.prefix;
+      const now = getBDDate();
       const currentTime = formatTime(now);
       const currentDate = formatDate(now);
-        
+
       const boxMessage = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-│➥📅 Date : ${currentDate.formatted}
-│➥🗓️ Day : ${currentDate.dayName}
-├─•
-│➥👋 Hey ${userName}
-├─•
-│➥📋 PREFIX INFO
-├─•
-│➥🌐 Global Prefix: ${globalPrefix}
-│➥🛸 Chat Prefix: ${chatPrefix}
-├─•
-│➥📊 SYSTEM STATS
-│➥🕰️ Uptime: ${uptimeText}
-│➥📝 GC Members: ${memberCount}
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
+┍━━━[  🤖 𝗫𝟲𝟵𝗫 𝗕𝗢𝗧  ]━━━◊
+┋
+┋➥ 😀 Hey ${userName}
+┋
+┋➥ 🕰️ Time : ${currentTime}
+┋➥ 🌊 Date : ${currentDate.formatted}
+┋➥ 🌤️ Day  : ${currentDate.dayName}
+┋➥ 🌐 Global Prefix: ${global.GoatBot.config.prefix}
+┋➥ 🛸 Chat Prefix  : ${chatPrefix}
+┋➥ 😊 ${BOT_NAME} AT YOUR SERVICE
+┕━━━━━━━━━━━━━━━━━━━━━◊
 `.trim();
-        
-      let stream;
-      try {
-        stream = await global.utils.getStreamFromURL(PREFIX_CHECK_GIF);
-      } catch (gifErr) {
-        console.error("[prefix.js - GIF error]", gifErr);
-        stream = null;
-      }
-      
-      if (stream) {
-        return message.reply({
-          body: boxMessage,
-          attachment: stream
-        });
-      } else {
-        return message.reply(boxMessage);
-      }
-      
+
+      let stream = null;
+      try { stream = await utils.getStreamFromURL(PREFIX_CHECK_GIF); } catch {}
+      return message.reply(stream ? { body: boxMessage, attachment: stream } : boxMessage);
+
     } catch (err) {
       console.error("[prefix.js - onChat]", err);
-      
-      const now = new Date();
-      const currentTime = formatTime(now);
-      
-      const errorBox = `
-┌─❖
-│➥🤖 ${BOT_NAME}
-├─•
-│➥⏰ Time : ${currentTime}
-├─•
-│➥⚠️ CHAT TRIGGER ERROR
-│➥📝 Message: ${err.message || "Unknown error"}
-├─•
-│➥📊 SYSTEM STATS
-│➥❌ Status: Failed
-│➥😊 ${BOT_NAME} AT YOUR SERVICE
-└─❖
-`.trim();
-      
-      ctx.message.reply(errorBox);
     }
   },
-    
+  
   onLoad: function() {
-    if (global.prefixCleanupInterval) {
-      clearInterval(global.prefixCleanupInterval);
-    }
-    
+    if (global.prefixCleanupInterval) clearInterval(global.prefixCleanupInterval);
     global.prefixCleanupInterval = setInterval(() => {
-      if (global.GoatBot.onReaction) {
-        const now = Date.now();
-        let cleaned = 0;
-        
-        for (const [messageID, data] of global.GoatBot.onReaction.entries()) {
-          if (now - (data.timestamp || 0) > 30 * 60 * 1000) {
-            global.GoatBot.onReaction.delete(messageID);
-            cleaned++;
-          }
-        }
-        
-        if (cleaned > 0) {
-          console.log(`[prefix.js] Cleaned up ${cleaned} stale reactions`);
-        }
+      if (!global.GoatBot.onReaction) return;
+      const now = Date.now();
+      for (const [messageID, data] of global.GoatBot.onReaction.entries()) {
+        if (now - (data.timestamp || 0) > 30 * 60 * 1000) global.GoatBot.onReaction.delete(messageID);
       }
     }, 10 * 60 * 1000);
   },
-    
+
   onUnload: function() {
     if (global.prefixCleanupInterval) {
       clearInterval(global.prefixCleanupInterval);
