@@ -6,7 +6,7 @@ module.exports = {
     name: "imgbb",
     aliases: ["i"],
     version: "1.9",
-    author: "Azadx69x",//Author change korle tor marechudi 
+    author: "Azadx69x",
     countDown: 5,
     role: 0,
     shortDescription: { en: "Convert an image to image URL" },
@@ -32,41 +32,8 @@ module.exports = {
 
       const response = await axios.post('https://api.imgbb.com/1/upload', form, { headers: form.getHeaders() });
       const result = response.data.data;
-
-      const formatBox = ({ title, link, author, type, size }) => {
-        const width = 50;
-        const pad = (text) => {
-          const len = text.replace(/[\u{1F300}-\u{1F6FF}]/gu, '').length;
-          const spaces = width - len - 2;
-          return text + ' '.repeat(spaces > 0 ? spaces : 0);
-        };
-        const wrapText = (text, maxWidth) => {
-          const regex = new RegExp(`.{1,${maxWidth}}`, 'g');
-          return text.match(regex) || [];
-        };
-        const wrappedLink = wrapText(link, width - 4);
-        let box = `╔${'═'.repeat(width)}╗\n`;
-        box += `║ ${pad(title)} ║\n`;
-        box += `╠${'═'.repeat(width)}╣\n`;
-        wrappedLink.forEach(line => {
-          box += `║ ${pad(line)} ║\n`;
-        });
-        if (type) box += `║ ${pad('🖼️ Type: ' + type)} ║\n`;
-        if (size) box += `║ ${pad('📦 Size: ' + size + ' bytes')} ║\n`;
-        box += `╚${'═'.repeat(width)}╝\n`;
-        box += `✨ Author ${author}`;
-        return box;
-      };
-
-      const msg = formatBox({
-        title: '✅ 𝗜𝗠𝗚𝗕𝗕 𝗨𝗣𝗟𝗢𝗔𝗗 𝗦𝗨𝗖𝗖𝗘𝗦𝗦',
-        link: result.url,
-        author: this.config.author,
-        type: result.image.format,
-        size: result.image.size
-      });
-
-      return api.sendMessage(msg, event.threadID, event.messageID);
+        
+      return api.sendMessage(result.url, event.threadID, event.messageID);
 
     } catch (err) {
       console.error(err);
