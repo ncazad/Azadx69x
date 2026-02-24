@@ -1,75 +1,103 @@
 module.exports = {
   config: {
     name: "slot",
-    version: "1.1",
+    version: "0.0.7",
     author: "Azadx69x",
-    countDown: 5,
+    countDown: 3,
     role: 0,
+    description: "🎰 Slot Machine",
     category: "game",
-    description: "🎰 Balanced Slot! Fair wins and losses",
-    usage: "slot <amount>"
+    guide: { en: "Use: {pn} [bet amount]" }
   },
 
-  onStart: async function({ event, api, usersData, args }) {
-    const userId = event.senderID;
-    const threadID = event.threadID;
+  onStart: async function({ message, event, args, usersData }) {
+    const { senderID } = event;
     const bet = parseInt(args[0]);
-    
-    let user = await usersData.get(userId);
-    if (!user) {
-      user = { money: 1000 };
-      await usersData.set(userId, user);
-    }
 
-    if (!bet || bet <= 0)
-      return api.sendMessage(`⚠️ Invalid bet!`, threadID, event.messageID);
+    const formatMoney = (amount) => {
+      if (isNaN(amount)) return "💲0";
+      amount = Number(amount);
+      const scales = [
+        { value: 1e15, suffix: 'Q', color: '🌈' },
+        { value: 1e12, suffix: 'T', color: '✨' },
+        { value: 1e9, suffix: 'B', color: '💎' },
+        { value: 1e6, suffix: 'M', color: '💰' },
+        { value: 1e3, suffix: 'k', color: '💵' }
+      ];
+      const scale = scales.find(s => amount >= s.value);
+      if (scale) return `${scale.color}${(amount / scale.value).toFixed(2)}${scale.suffix}`;
+      return `💲${amount.toLocaleString()}`;
+    };
 
-    if (user.money < bet)
-      return api.sendMessage(`❌ Not enough balance.\n💰 Balance: ${user.money}$`, threadID, event.messageID);
+    if (isNaN(bet) || bet <= 0) return message.reply("⛔ 𝐄𝐧𝐭𝐞𝐫 𝐛𝐞𝐭 𝐚𝐦𝐨𝐮𝐧𝐭!");
+
+    let user = await usersData.get(senderID);
+    if (!user) user = { money: 1000 };
+    if (user.money < bet) return message.reply(`🔴 𝐈𝐧𝐬𝐮𝐟𝐟𝐢𝐜𝐢𝐞𝐧𝐭 𝐟𝐮𝐧𝐝𝐬! 𝐍𝐞𝐞𝐝 ${formatMoney(bet - user.money)} 𝐦𝐨𝐫𝐞.`);
 
     user.money -= bet;
 
-    const symbols = ["🍒","🍋","🔔","⭐","💎","7️⃣","🍀","🍉","🍇","🥭","🍌","🍓","🍍","🍎","🌟","💰"];
+    const symbols = [
+      { emoji: "🍒", weight: 30 },
+      { emoji: "🍋", weight: 25 },
+      { emoji: "🍇", weight: 20 },
+      { emoji: "🍉", weight: 15 },
+      { emoji: "⭐", weight: 7 },
+      { emoji: "7️⃣", weight: 3 }
+    ];
 
-    const rareMultipliers = { 
-      "💎":8, "⭐":6, "7️⃣":10, "🍀":5, "🔔":4, "💰":12, "🌟":5 
+    const roll = () => {
+      const total = symbols.reduce((s, e) => s + e.weight, 0);
+      let rand = Math.random() * total;
+      for (const s of symbols) {
+        if (rand < s.weight) return s.emoji;
+        rand -= s.weight;
+      }
+      return symbols[0].emoji;
     };
 
-    const draw = () => symbols[Math.floor(Math.random() * symbols.length)];
-    const s1 = draw(), s2 = draw(), s3 = draw();
+    const slot1 = roll(), slot2 = roll(), slot3 = roll();
 
-    let winAmount = 0, status = "";
+    let multiplier = 1, winnings = 0, outcome = "", winType = "";
 
-    if (s1 === s2 && s2 === s3) {
-      winAmount = bet * (rareMultipliers[s1] || 3);
-      status = `🎉🎊 JACKPOT! TRIPLE ${s1}! You won ${winAmount}$! 🎊🎉`;
-    } else if (s1 === s2 || s1 === s3 || s2 === s3) {
-      const doubleMultipliers = { "💎":4, "⭐":3, "7️⃣":5, "🍀":2, "🔔":2, "💰":6, "🌟":2 };
-      const matchedSymbol = s1 === s2 ? s1 : s1 === s3 ? s1 : s2;
-      winAmount = bet * (doubleMultipliers[matchedSymbol] || 1.5);
-      status = `✅ MATCH! You won ${winAmount}$!`;
+    if (slot1 === slot2 && slot2 === slot3) {
+      multiplier = 5 + Math.floor(Math.random() * 4);
+      winnings = bet * multiplier;
+      outcome = "💀 𝐌𝐄𝐆𝐀 𝐉𝐀𝐂𝐊𝐏𝐎𝐓! TRIPLE " + slot1;
+      winType = `🔥 𝐌𝐀𝐗 𝐖𝐈𝐍 ×${multiplier}`;
+    } else if (slot1 === slot2 || slot2 === slot3 || slot1 === slot3) {
+      multiplier = 2 + Math.floor(Math.random() * 3);
+      winnings = bet * multiplier;
+      outcome = "✨ 𝐍𝐈𝐂𝐄! 2 𝐌𝐀𝐓𝐂𝐇𝐈𝐍𝐆 𝐒𝐘𝐌𝐁𝐎𝐋𝐒";
+      winType = `🌟 𝐖𝐈𝐍 ×${multiplier}`;
+    } else if (Math.random() < 0.5) {
+      multiplier = 1.5;
+      winnings = bet * multiplier;
+      outcome = "🎯 𝐋𝐔𝐂𝐊𝐘 𝐒𝐏𝐈𝐍!";
+      winType = "🍀 𝐒𝐌𝐀𝐋𝐋 𝐖𝐈𝐍";
     } else {
-      status = `😢 No match! You lost ${bet}$`;
+      multiplier = 1;
+      winnings = -bet;
+      outcome = "💸 𝐁𝐄𝐓𝐓𝐄𝐑 𝐋𝐔𝐂𝐊 𝐍𝐄𝐗𝐓 𝐓𝐈𝐌𝐄!";
+      winType = "😓 𝐋𝐎𝐒𝐒 ×1";
     }
 
-    user.money += winAmount;
+    if (winnings > 0) user.money += winnings;
+    await usersData.set(senderID, user);
+    const finalBalance = user.money;
+    
+    const slotBox = 
+      `🎰 𝐒𝐋𝐎𝐓 𝐌𝐀𝐂𝐇𝐈𝐍𝐄 ─────────────\n` +
+      `   【 ${slot1} · ${slot2} · ${slot3} 】        ─────────────\n`;
 
-    await usersData.set(userId, user);
+    const msgContent = 
+      `${slotBox}` +
+      `\n📉 𝐑𝐄𝐒𝐔𝐋𝐓: ${outcome}\n` +
+      `${winType ? ` ${winType}\n` : ""}` +
+      `${winnings >= 0 ? `🏆 𝐖𝐎𝐍 ×${multiplier}: ${formatMoney(winnings)}\n` : `💔 𝐋𝐎𝐒𝐓 ×1: ${formatMoney(bet)}\n`}` +
+      `🪙 𝐁𝐀𝐋𝐀𝐍𝐂𝐄: ${formatMoney(finalBalance)}\n` +
+      ``;
 
-    const createMessage = (a, b, c, st, bal) => `
-╔═════════════════════╗
-║               🎰 SLOTS 🎰       
-╠═════════════════════╣
-║               ${a}   ${b}   ${c}       
-╠═════════════════════╣
-║ ${st} 
-╠═════════════════════╣
-║ 📥 Bet: ${bet}$   │ 🪙 Balance: ${bal}$ 
-╚═════════════════════╝
-`;
-
-    const finalStatus = winAmount >= bet * 8 ? `💥🔥 ${status} 🔥💥` : status;
-
-    await api.sendMessage(createMessage(s1, s2, s3, finalStatus, user.money), threadID, event.messageID);
+    return message.reply(msgContent);
   }
 };
