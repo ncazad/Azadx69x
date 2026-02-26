@@ -5,83 +5,75 @@ module.exports = {
     config: {
         name: "admin",
         aliases: ["ad"],
-        version: "1.1",
+        version: "1.3",
         author: "Azadx69x",
         countDown: 5,
         role: 0,
         shortDescription: {
-            en: "𝗔𝗱𝗱, 𝗿𝗲𝗺𝗼𝘃𝗲 𝗼𝗿 𝘃𝗶𝗲𝘄 𝘁𝗵𝗲 𝗮𝗱𝗺𝗶𝗻 𝗹𝗶𝘀𝘁"
+            en: "Add, remove or view the admin list"
         },
         longDescription: {
-            en: "𝗠𝗮𝗻𝗮𝗴𝗲 𝗯𝗼𝘁 𝗮𝗱𝗺𝗶𝗻𝘀 — 𝗮𝗱𝗱/𝗿𝗲𝗺𝗼𝘃𝗲/𝘃𝗶𝗲𝘄"
+            en: "Manage bot admins — add/remove/view"
         },
         category: "admin",
         guide: {
             en:
-`🕵 𝗨𝘀𝗮𝗴𝗲:
-{pn} 𝗹𝗶𝘀𝘁
-{pn} 𝗮𝗱𝗱 <uid|tag|reply>
-{pn} 𝗿𝗲𝗺𝗼𝘃𝗲 <uid|tag|reply>`
+`Usage:
+{pn} list
+{pn} add <uid|tag|reply>
+{pn} remove <uid|tag|reply>`
         }
     },
 
     langs: {
         en: {
             listAdmin:
-`╔════⛨ 𝐀𝐃𝐌𝐈𝐍 𝐋𝐈𝐒𝐓 ⛨════╗
-     ✪ 𝙾𝚆𝙽𝙴𝚁: 𝙰𝚣𝚊𝚍 𝚇69𝚇
-╠═══════════════════╣
-     📋 𝙰𝚍𝚖𝚒𝚗 𝙻𝚒𝚜𝚝:
+`┍━━━[ 👨‍💻 Admin ]━━━◊
 %1
-╚═══════════════════╝`,
+┕━━━━━━━━━◊`,
 
-            noAdmin: "⚠️ | 𝙽𝚘 𝙰𝚍𝚖𝚒𝚗𝚜 𝙵𝚘𝚞𝚗𝚍!",
+            noAdmin: "⚠️ No admins found!",
 
             added:
-`✔ 𝗡𝗲𝘄 𝗔𝗱𝗺𝗶𝗻𝘀 𝗔𝗱𝗱𝗲𝗱:
-━━━━━━━━━━━━━━━━
+`┍━━━[ ✅ Added Admin ]━━━◊
 %2
-━━━━━━━━━━━━━━━━`,
+┕━━━━━━━━━◊`,
 
             alreadyAdmin:
-`⚠️ 𝗔𝗹𝗿𝗲𝗮𝗱𝘆 𝗔𝗱𝗺𝗶𝗻:
-━━━━━━━━━━━━━━━━
+`┍━━━[ ⚠️ Already Admin ]━━━◊
 %2
-━━━━━━━━━━━━━━━━`,
+┕━━━━━━━━━◊`,
 
             removed:
-`✔ 𝗔𝗱𝗺𝗶𝗻 𝗣𝗿𝗶𝘃𝗶𝗹𝗲𝗴𝗲 𝗥𝗲𝗺𝗼𝘃𝗲𝗱:
-━━━━━━━━━━━━━━━━
+`┍━━━[ ❌ Removed Admin ]━━━◊
 %2
-━━━━━━━━━━━━━━━━`,
+┕━━━━━━━━━◊`,
 
             notAdmin:
-`⚠️ 𝗡𝗼𝘁 𝗔𝗻 𝗔𝗱𝗺𝗶𝗻:
-━━━━━━━━━━━━━━━━
+`┍━━━[ ⚠️ Not Admin ]━━━◊
 %2
-━━━━━━━━━━━━━━━━`,
+┕━━━━━━━━━◊`,
 
-            missingIdAdd: "⚠️ | 𝗧𝗮𝗴/𝗿𝗲𝗽𝗹𝘆/𝗨𝗜𝗗 𝗻𝗲𝗲𝗱𝗲𝗱 𝘁𝗼 𝗮𝗱𝗱 𝗮𝗱𝗺𝗶𝗻.",
-            missingIdRemove: "⚠️ | 𝗧𝗮𝗴/𝗿𝗲𝗽𝗹𝘆/𝗨𝗜𝗗 𝗻𝗲𝗲𝗱𝗲𝗱 𝘁𝗼 𝗿𝗲𝗺𝗼𝘃𝗲 𝗮𝗱𝗺𝗶𝗻.",
+            missingIdAdd: "⚠️ Tag/reply/UID needed to add admin.",
+            missingIdRemove: "⚠️ Tag/reply/UID needed to remove admin.",
 
-            notAllowed: "⛔ | 𝗬𝗼𝘂 𝗮𝗿𝗲 𝗻𝗼𝘁 𝗮𝗹𝗹𝗼𝘄𝗲𝗱 𝘁𝗼 𝘂𝘀𝗲 𝘁𝗵𝗶𝘀!"
+            notAllowed: "⛔ You are not allowed to use this!"
         }
     },
 
     onStart: async function ({ message, args, event, usersData, getLang }) {
         const senderID = event.senderID;
+
+        const formatAdmin = async (uid) => {
+            const name = await usersData.getName(uid);
+            return `┋➥ • ${name}\n┋➥ • (${uid})`;
+        };
         
         if (args[0] === "list" || args[0] === "-l") {
             if (config.adminBot.length === 0)
                 return message.reply(getLang("noAdmin"));
 
-            const adminList = await Promise.all(
-                config.adminBot.map(async uid => {
-                    const name = await usersData.getName(uid);
-                    return `• ${name} (${uid})`;
-                })
-            );
-
+            const adminList = await Promise.all(config.adminBot.map(formatAdmin));
             return message.reply(getLang("listAdmin", adminList.join("\n")));
         }
         
@@ -116,12 +108,12 @@ module.exports = {
             config.adminBot.push(...newAdmins);
             writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
 
-            const newNames = await Promise.all(newAdmins.map(uid => usersData.getName(uid)));
-            const oldNames = await Promise.all(alreadyAdmins.map(uid => usersData.getName(uid)));
+            const newList = await Promise.all(newAdmins.map(formatAdmin));
+            const alreadyList = await Promise.all(alreadyAdmins.map(formatAdmin));
 
             return message.reply(
-                (newNames.length ? getLang("added", newNames.length, newNames.map(n => `• ${n}`).join("\n")) : "") +
-                (alreadyAdmins.length ? "\n" + getLang("alreadyAdmin", alreadyAdmins.length, oldNames.map(n => `• ${n}`).join("\n")) : "")
+                (newList.length ? getLang("added", newList.join("\n")) : "") +
+                (alreadyList.length ? "\n" + getLang("alreadyAdmin", alreadyList.join("\n")) : "")
             );
         }
         
@@ -152,15 +144,15 @@ module.exports = {
 
             writeFileSync(global.client.dirConfig, JSON.stringify(config, null, 2));
 
-            const removedNames = await Promise.all(removed.map(uid => usersData.getName(uid)));
-            const notNames = await Promise.all(notAdmins.map(uid => usersData.getName(uid)));
+            const removedList = await Promise.all(removed.map(formatAdmin));
+            const notList = await Promise.all(notAdmins.map(formatAdmin));
 
             return message.reply(
-                (removed.length ? getLang("removed", removed.length, removedNames.map(n => `• ${n}`).join("\n")) : "") +
-                (notAdmins.length ? "\n" + getLang("notAdmin", notAdmins.length, notNames.map(n => `• ${n}`).join("\n")) : "")
+                (removedList.length ? getLang("removed", removedList.join("\n")) : "") +
+                (notList.length ? "\n" + getLang("notAdmin", notList.join("\n")) : "")
             );
         }
         
-        return message.reply("⚠️ | 𝗨𝘀𝗲: 𝗹𝗶𝘀𝘁 / 𝗮𝗱𝗱 / 𝗿𝗲𝗺𝗼𝘃𝗲");
+        return message.reply("Use: list / add / remove");
     }
 };
