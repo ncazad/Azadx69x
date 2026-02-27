@@ -100,31 +100,75 @@ module.exports = {
       const selected = videos[choice - 1];
 
       try {
-        const downloadApi = `https://azadx69x-ytb-api.vercel.app/download?url=${encodeURIComponent(selected.url)}&type=mp3`;
+        const apiUrl = `https://azadx69x-all-apis-top.vercel.app/api/ytdown?url=${encodeURIComponent(selected.url)}`;
         
-        console.log("Downloading from:", downloadApi);
-
-        const mp3Res = await axios({
-          url: downloadApi,
-          responseType: "stream",
-          timeout: 120000
+        console.log("Step 1 - Getting media info:", apiUrl);
+        
+        const apiRes = await axios.get(apiUrl, { timeout: 30000 });
+        
+        if (!apiRes.data || !apiRes.data.success || !apiRes.data.result) {
+          throw new Error("API request failed");
+        }
+        
+        const mediaItems = apiRes.data.result.api.mediaItems;
+        
+        if (!mediaItems || !Array.isArray(mediaItems) || mediaItems.length === 0) {
+          throw new Error("No media items found");
+        }
+        
+        let audioItem = mediaItems.find(item => 
+          item.type === "Audio" && item.mediaQuality === "128K"
+        );
+        
+        if (!audioItem) {
+          audioItem = mediaItems.find(item => item.type === "Audio");
+        }
+        
+        if (!audioItem || !audioItem.mediaUrl) {
+          throw new Error("No audio URL found");
+        }
+        
+        console.log("Step 2 - Getting download link from:", audioItem.mediaUrl);
+        
+        const linkRes = await axios.get(audioItem.mediaUrl, { 
+          timeout: 30000,
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
+        });
+        
+        console.log("Link response:", JSON.stringify(linkRes.data, null, 2));
+        
+        if (!linkRes.data || !linkRes.data.fileUrl) {
+          throw new Error("No file URL in response");
+        }
+        
+        const downloadUrl = linkRes.data.fileUrl;
+        console.log("Step 3 - Downloading from:", downloadUrl);
+        
+        const fileRes = await axios({
+          url: downloadUrl,
+          responseType: "arraybuffer",
+          timeout: 120000,
+          maxContentLength: 50 * 1024 * 1024,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
         });
 
-        const fileName = `song_${Date.now()}.mp3`;
+        if (!fileRes.data || fileRes.data.length < 10000) {
+          throw new Error("Downloaded file too small (" + (fileRes.data ? fileRes.data.length : 0) + " bytes)");
+        }
+
+        console.log("Downloaded size:", fileRes.data.length);
+
+        const fileName = "song_" + Date.now() + ".m4a";
         const filePath = path.join(__dirname, fileName);
-        
-        const writer = fs.createWriteStream(filePath);
-        mp3Res.data.pipe(writer);
-
-        await new Promise((resolve, reject) => {
-          writer.on("finish", resolve);
-          writer.on("error", reject);
-        });
+        fs.writeFileSync(filePath, fileRes.data);
 
         const stats = fs.statSync(filePath);
-        if (stats.size < 1000) {
-          throw new Error("Downloaded file too small");
-        }
+        console.log("Saved file size:", stats.size);
 
         await api.sendMessage(
           {
