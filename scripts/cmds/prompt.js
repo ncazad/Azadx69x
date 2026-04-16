@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const baseApi = "https://azadx69x-all-apis-top.vercel.app/api/prompt";
+const baseApi = "https://azadx69x.is-a.dev/api/prompt";
 
 module.exports = {
   config: {
@@ -41,7 +41,7 @@ module.exports = {
 
       const promptText = json.data.prompt;
       
-      await api.sendMessage({ body: `🐦 Generated Prompt:\n\n${promptText}` }, threadID, messageID);
+      await api.sendMessage({ body: `🐦 Generated Prompt:\n\n${promptText}`, skipFontStyle: true }, threadID, messageID);
       
       api.setMessageReaction("✅", messageID, () => {}, true);
     } catch (e) {
